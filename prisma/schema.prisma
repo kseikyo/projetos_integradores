@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model aluno {
+  instituicao     String?
+  pessoa_aluno_id Int       @id
+  ra              String?
+  telefone        String?
+  pessoa          pessoa    @relation(fields: [pessoa_aluno_id], references: [id])
+  entrega         entrega[]
+}
+
+model avalia {
+  avalia_disciplina_id         Int
+  avalia_pessoa_id             Int
+  avalia_projeto_integrador_id Int
+  comentario                   String?
+  nota_parcial                 String?
+  disciplina                   disciplina         @relation(fields: [avalia_disciplina_id], references: [id])
+  pessoa                       pessoa             @relation(fields: [avalia_pessoa_id], references: [id])
+  projeto_integrador           projeto_integrador @relation(fields: [avalia_projeto_integrador_id], references: [id])
+
+  @@id([avalia_pessoa_id, avalia_projeto_integrador_id])
+}
+
+model disciplina {
+  carga_horaria    Int?
+  contem_modulo_id Int?
+  id               Int        @default(autoincrement()) @id
+  nome             String?
+  peso             Int?
+  modulo           modulo?    @relation(fields: [contem_modulo_id], references: [id])
+  avalia           avalia[]
+  ministra         ministra[]
+}
+
+model entrega {
+  entrega_aluno_id              Int
+  entrega_projeto_integrador_id Int
+  aluno                         aluno              @relation(fields: [entrega_aluno_id], references: [pessoa_aluno_id])
+  projeto_integrador            projeto_integrador @relation(fields: [entrega_projeto_integrador_id], references: [id])
+
+  @@id([entrega_aluno_id, entrega_projeto_integrador_id])
+}
+
+model log {
+  data        DateTime?
+  id          Int       @default(autoincrement()) @id
+  id_usuario  Int
+  nome_tabela String?
+  operacao    String?
+}
+
+model ministra {
+  ministra_disciplina_id Int
+  ministra_professor_id  Int
+  ministra_tutor_id      Int
+  disciplina             disciplina @relation(fields: [ministra_disciplina_id], references: [id])
+  professor              professor  @relation(fields: [ministra_professor_id], references: [pessoa_professor_id])
+  tutor                  tutor      @relation(fields: [ministra_tutor_id], references: [pessoa_tutor_id])
+
+  @@id([ministra_disciplina_id, ministra_professor_id])
+}
+
+model modulo {
+  data_fim    DateTime?
+  data_inicio DateTime?
+  id          Int          @default(autoincrement()) @id
+  turma       Int?
+  disciplina  disciplina[]
+}
+
+model pessoa {
+  email     String
+  id        Int         @default(autoincrement()) @id
+  nome      String?
+  aluno     aluno[]
+  avalia    avalia[]
+  professor professor[]
+  tutor     tutor[]
+}
+
+model professor {
+  pessoa_professor_id Int        @id
+  pessoa              pessoa     @relation(fields: [pessoa_professor_id], references: [id])
+  ministra            ministra[]
+}
+
+model projeto_integrador {
+  data_entrega DateTime?
+  id           Int       @default(autoincrement()) @id
+  nota_global  Float?
+  url_entrega  String?
+  avalia       avalia[]
+  entrega      entrega[]
+}
+
+model tutor {
+  pessoa_tutor_id Int        @id
+  tipo            String?
+  pessoa          pessoa     @relation(fields: [pessoa_tutor_id], references: [id])
+  ministra        ministra[]
+}
