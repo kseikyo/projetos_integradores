@@ -23,6 +23,7 @@ class ProfessorController {
     }
 
     return response.json(professor);
+
   }
 
   // Gets a professor and it's disciplines

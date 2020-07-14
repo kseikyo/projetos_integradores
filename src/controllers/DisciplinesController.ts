@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 class DisciplinesController {
@@ -13,7 +13,7 @@ class DisciplinesController {
   // Gets all disciplines from a professor by it's id on request
   async show_by_professor_id (request: Request, response: Response) {
     try {
-      const { id } = request.params;
+      const { id } = request.user;
 
       if (isNaN(Number(id))) {
         return response.status(400).json({ message: "ID provided is not a valid ID."} );
@@ -95,9 +95,6 @@ class DisciplinesController {
 
   }
 
-  async create(request: Request, response: Response) {
-    const { nome, carga_horaria, peso } = request.body;
-  }
 }
 
 export default DisciplinesController;
