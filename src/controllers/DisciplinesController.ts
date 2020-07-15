@@ -5,7 +5,28 @@ const prisma = new PrismaClient();
 
 class DisciplinesController {
   async index (request: Request, response: Response) {
-    const disciplines = await prisma.disciplina.findMany();
+    const disciplines = await prisma.disciplina.findMany({
+      select: {
+        id: true,
+        nome: true,
+        peso: true,
+        modulo: {
+          select: {
+            turma: true,
+            data_fim: true
+          }
+        }
+      }
+    });
+
+    const now = new Date();
+    const endDates = disciplines.map(discipline => {
+      return discipline.modulo.data_fim > now
+    });
+
+    if(endDates.includes(false)){
+      return response.status(503).json({ message: 'There are no modules available' });
+    }
     
     return response.json(disciplines);
   };

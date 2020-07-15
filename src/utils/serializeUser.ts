@@ -1,6 +1,6 @@
 import { User } from "src/@types/custom"
 
-export const serializeUser = async (user: User) => {
+export const serializeUser = (user: User) => {
   return { 
     id: user.id,
     email: user.email,

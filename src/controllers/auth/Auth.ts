@@ -12,6 +12,8 @@ export default class Auth {
   async login(request: Request, response: Response) {
     const { username, password, id } = request.body;
 
+    // user logged in sucessfully
+    // Get id, name, email, pessoa_professor_id and pessoa_tutor_id 
     const user = await prisma.pessoa.findOne({
       where: {
         id: Number(id)
@@ -35,9 +37,9 @@ export default class Auth {
     });
 
     if (!user) {
-      response.sendStatus(400).json({ message: 'User not found' });
+      return response.status(400).json({ message: 'User not found' });
     }
-    const serializedUser = await serializeUser(user);
+    const serializedUser = serializeUser(user);
     const jwt = jsonwebtoken.sign(serializedUser, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "5m"
     });
@@ -55,7 +57,8 @@ export default class Auth {
     const token = await request.cookies.jid;
 
     if (!token) {
-      return response.sendStatus(400);
+      return { message: 'No token' };
+      // return response.sendStatus(400);
     }
 
     let payload;
@@ -63,7 +66,8 @@ export default class Auth {
       payload = jsonwebtoken.verify(token, process.env.REFRESH_TOKEN_SECRET);
     } catch (err) {
       console.log(err);
-      return response.sendStatus(400);
+      return { message: 'Bad token' };
+      // return response.sendStatus(400);
     }
     // token is valid send back access
     const user = await prisma.pessoa.findOne({
@@ -89,12 +93,10 @@ export default class Auth {
     });
     
     if (!user) {
-      return response.send(400).json({ message: 'User not found' });
+      return { message: 'User not found' };
     }
-    const serializedUser = await serializeUser(user);
-
-    return response.send({ accessToken: createAccessToken(serializedUser) })
+    const serializedUser = serializeUser(user);
+    return { accessToken: createAccessToken(serializedUser) };
+    // return response.send({ accessToken: createAccessToken(serializedUser) })
   }
-
-
 }
