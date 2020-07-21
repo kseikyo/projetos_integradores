@@ -19,6 +19,7 @@ class DisciplinesController {
       }
     });
 
+    // Check if module is over
     const now = new Date();
     const endDates = disciplines.map(discipline => {
       return discipline.modulo.data_fim > now

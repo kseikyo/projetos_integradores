@@ -8,20 +8,20 @@ datasource db {
 }
 
 model aluno {
-  instituicao     String?
-  pessoa_aluno_id Int       @id
   ra              String?
   telefone        String?
+  instituicao     String?
+  pessoa_aluno_id Int       @id
   pessoa          pessoa    @relation(fields: [pessoa_aluno_id], references: [id])
   entrega         entrega[]
 }
 
 model avalia {
-  avalia_disciplina_id         Int
+  nota_parcial                 String?
+  comentario                   String?
   avalia_pessoa_id             Int
   avalia_projeto_integrador_id Int
-  comentario                   String?
-  nota_parcial                 String?
+  avalia_disciplina_id         Int
   disciplina                   disciplina         @relation(fields: [avalia_disciplina_id], references: [id])
   pessoa                       pessoa             @relation(fields: [avalia_pessoa_id], references: [id])
   projeto_integrador           projeto_integrador @relation(fields: [avalia_projeto_integrador_id], references: [id])
@@ -30,11 +30,11 @@ model avalia {
 }
 
 model disciplina {
-  carga_horaria    Int?
-  contem_modulo_id Int?
-  id               Int        @default(autoincrement()) @id
   nome             String?
+  carga_horaria    Int?
   peso             Int?
+  id               Int        @default(autoincrement()) @id
+  contem_modulo_id Int?
   modulo           modulo?    @relation(fields: [contem_modulo_id], references: [id])
   avalia           avalia[]
   ministra         ministra[]
@@ -43,6 +43,8 @@ model disciplina {
 model entrega {
   entrega_aluno_id              Int
   entrega_projeto_integrador_id Int
+  grupos                        String
+  video_ok                      Boolean?
   aluno                         aluno              @relation(fields: [entrega_aluno_id], references: [pessoa_aluno_id])
   projeto_integrador            projeto_integrador @relation(fields: [entrega_projeto_integrador_id], references: [id])
 
@@ -50,11 +52,11 @@ model entrega {
 }
 
 model log {
-  data        DateTime?
-  id          Int       @default(autoincrement()) @id
-  id_usuario  Int
   nome_tabela String?
   operacao    String?
+  data        DateTime?
+  id_usuario  Int
+  id          Int       @default(autoincrement()) @id
 }
 
 model ministra {
@@ -69,17 +71,17 @@ model ministra {
 }
 
 model modulo {
-  data_fim    DateTime?
   data_inicio DateTime?
-  id          Int          @default(autoincrement()) @id
+  data_fim    DateTime?
   turma       Int?
+  id          Int          @default(autoincrement()) @id
   disciplina  disciplina[]
 }
 
 model pessoa {
+  nome      String?
   email     String
   id        Int         @default(autoincrement()) @id
-  nome      String?
   aluno     aluno[]
   avalia    avalia[]
   professor professor[]
@@ -93,17 +95,17 @@ model professor {
 }
 
 model projeto_integrador {
-  data_entrega DateTime?
-  id           Int       @default(autoincrement()) @id
-  nota_global  Float?
   url_entrega  String?
+  data_entrega DateTime?
+  nota_global  Float?
+  id           Int       @default(autoincrement()) @id
   avalia       avalia[]
   entrega      entrega[]
 }
 
 model tutor {
-  pessoa_tutor_id Int        @id
   tipo            String?
+  pessoa_tutor_id Int        @id
   pessoa          pessoa     @relation(fields: [pessoa_tutor_id], references: [id])
   ministra        ministra[]
 }
