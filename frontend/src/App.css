@@ -10,7 +10,8 @@
 }
 
 body {
-  background: #111111;
+  font-size: 16px;
+  background: #292929;
   -webkit-font-smoothing: antialiased;
   color: var(--text-color);
 }

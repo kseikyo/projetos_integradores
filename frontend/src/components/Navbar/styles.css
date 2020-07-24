@@ -1,0 +1,31 @@
+header {
+  background-color: #121212;
+  padding: 1.5em 0 1.5em;
+}
+
+nav {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  padding-left: 3em;
+  align-items: center;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+nav a:hover {
+  opacity: .8;
+}
+
+nav button {
+  grid-column: 11 / span 2;
+  margin-top: -.5em;
+  justify-self: center;
+}
+
+
+.align-center {
+  text-align: center;
+}

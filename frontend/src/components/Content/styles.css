@@ -1,0 +1,16 @@
+main {
+  border: 1px solid #eee;
+  width: 85%;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10em;
+  margin-top: 56px;
+  background-color: #272727;
+} 
+
+.container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
