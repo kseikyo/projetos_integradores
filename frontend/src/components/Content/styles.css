@@ -1,4 +1,4 @@
-main {
+/* main {
   border: 1px solid #eee;
   width: 85%;
   height: 80vh;
@@ -8,7 +8,7 @@ main {
   margin-left: 10em;
   margin-top: 56px;
   background-color: #272727;
-} 
+}  */
 
 .container {
   display: grid;
