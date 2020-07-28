@@ -1,0 +1,24 @@
+.container_logon {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+aside.aside_logon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: clamp(7vh, 12vh, 300px);
+}
+
+aside.aside_logon img {
+  width: min(300px, 40vw);
+  height: min(600px, 80vh);
+}
+
+body {
+  background-color: #121212;
+}
+
+span.MuiCardHeader-title {
+  font-size: 2.025rem;
+}
