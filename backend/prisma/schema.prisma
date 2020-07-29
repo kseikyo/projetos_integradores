@@ -80,7 +80,7 @@ model modulo {
 
 model pessoa {
   nome      String?
-  email     String
+  email     String      @unique
   id        Int         @default(autoincrement()) @id
   aluno     aluno[]
   avalia    avalia[]

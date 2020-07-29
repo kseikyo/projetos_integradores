@@ -11,6 +11,29 @@ require('dotenv').config();
 export default class Auth {
   async login(request: Request, response: Response) {
     const { username, password, id } = request.body;
+    
+    // Check if user with provided email exists
+    const auth_user = await prisma.pessoa.findOne({
+      where: {
+        email: username
+      },
+      select: {
+        email: true
+      }
+    });
+
+    if (!auth_user) {
+      return response.json({ message: "Email not registered." });
+    }
+
+    // user exists checking password
+    /**
+     * TODO CHECK PASSWORD
+     * Also add password to DB
+     */
+
+    // return response.json({ message: "Password incorrect." });
+
 
     // user logged in sucessfully
     // Get id, name, email, pessoa_professor_id and pessoa_tutor_id 
