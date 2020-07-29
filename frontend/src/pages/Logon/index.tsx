@@ -1,4 +1,5 @@
 import React, { FormEvent, useState, ChangeEvent } from 'react';
+import { useHistory } from 'react-router-dom';
 import './styles.css';
 
 import Card from '@material-ui/core/Card';
@@ -11,6 +12,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Svg from '../../assets/undraw_Login_v483.svg'
 import { CardHeader, TextField, createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import api from '../../api/api';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -37,26 +39,49 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Logon = () => {
+  const history = useHistory();
 
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
 
+
+  const [emailError, setEmailError] = useState(false);
+  const [emailHelper, setEmailHelper] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setFormData({...formData, [name]: value })
   }
 
-  const handleLoginSubmit = (event: FormEvent) => {
+  async function handleLoginSubmit(event: FormEvent) {
     event.preventDefault();
+    setEmailError(false);
+    setEmailHelper("");
     
     const { email, password } = formData;
 
-    /**
-     * TODO
-     * Send data to API and send user to /disciplines
-     */
+    const data = {
+      'username': email, 
+      password,
+      'id': 2
+    };
+
+    const res = await api.post('/login', data).catch(err => err);
+    if(res.data.message === "Email not registered.") {
+      setEmailError(true);
+      setEmailHelper("Email inválido");
+    }
+    else if(res.data.message === "Password incorrect.") {
+      setPasswordError(true);
+    }
+    else {
+      // User authenticated successfully...
+      // redirecting
+      history.push('/disciplines');
+    }
   }
 
   const darkTheme = createMuiTheme({
@@ -81,10 +106,12 @@ const Logon = () => {
             <CardContent>
               <form onSubmit={handleLoginSubmit} className={classes.form}>
                 <TextField
+                  error={emailError}
                   className={classes.input}
                   variant="filled"
                   margin="normal"
                   required
+                  helperText={emailHelper}
                   id="email"
                   label="Email"
                   name="email"
@@ -94,6 +121,7 @@ const Logon = () => {
                   onChange={handleInputChange}
                 />
                 <TextField
+                  error={passwordError}
                   className={classes.input}
                   variant="filled"
                   margin="normal"
