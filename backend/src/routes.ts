@@ -23,6 +23,7 @@ routes.post('/login', auth.login);
 
 // JWT routes
 routes.post('/refresh_token', auth.refresh_token)
+routes.post('/logout', auth.logout);
 
 // Students routes
 routes.get('/students', studentsController.index);

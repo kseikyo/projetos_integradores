@@ -6,7 +6,7 @@ require('dotenv').config();
 
 export const createAccessToken = (user: User) => {
   return jsonwebtoken.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "5m"
+    expiresIn: "15m"
   });
 };
 

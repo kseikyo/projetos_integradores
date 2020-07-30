@@ -10,7 +10,7 @@ require('dotenv').config();
 
 export default class Auth {
   async login(request: Request, response: Response) {
-    const { email, password, id } = request.body;
+    const { email, password } = request.body;
     
     // Check if user with provided email exists
     const auth_user = await prisma.pessoa.findOne({
@@ -71,21 +71,24 @@ export default class Auth {
     return response.json({ accessToken: jwt });
   }
 
+  async logout(request: Request, response: Response) {
+    response.cookie('jid', '');
+    return response.json({ accessToken: ''});
+  }
 
   async refresh_token(request: Request, response: Response) {
     const token = await request.cookies.jid;
-    
     if (!token) {
       // return { message: 'No token' };
-      return response.sendStatus(400);
+      return response.status(400).json({ message: 'No token'});
     }
 
     let payload;
     try {
-      payload = jsonwebtoken.verify(token, process.env.REFRESH_TOKEN_SECRET);
+      payload = jsonwebtoken.verify(token, process.env.REFRESH_TOKEN_SECRET!);
     } catch (err) {
       // return { message: 'Bad token' };
-      return response.sendStatus(400);
+      return response.json({ accessToken: '' });
     }
     // token is valid send back access
     const user = await prisma.pessoa.findOne({
@@ -109,14 +112,14 @@ export default class Auth {
         }
       }
     });
+
     if (!user) {
       // return { message: 'User not found' };
       return response.json({ message: 'User not found' });
     }
     const serializedUser = serializeUser(user);
 
-    sendRefreshToken(response, createAccessToken(serializedUser));
-    
+    sendRefreshToken(response, createRefreshToken(serializedUser));
     // return { accessToken: createAccessToken(serializedUser) };
     return response.send({ accessToken: createAccessToken(serializedUser) })
   }
