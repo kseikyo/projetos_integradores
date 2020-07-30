@@ -1,4 +1,4 @@
-import React, { FormEvent, useState, ChangeEvent } from 'react';
+import React, { FormEvent, useState, ChangeEvent, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import './styles.css';
 
@@ -13,6 +13,7 @@ import Svg from '../../assets/undraw_Login_v483.svg'
 import { CardHeader, TextField, createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import api from '../../api/api';
+import { Context } from '../../context/AuthContext';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -46,7 +47,8 @@ const Logon = () => {
     password: ''
   });
 
-
+  const { handleLogin } = useContext(Context);
+  
   const [emailError, setEmailError] = useState(false);
   const [emailHelper, setEmailHelper] = useState("");
   const [passwordError, setPasswordError] = useState(false);
@@ -64,12 +66,12 @@ const Logon = () => {
     const { email, password } = formData;
 
     const data = {
-      'username': email, 
+      email, 
       password,
-      'id': 2
     };
 
     const res = await api.post('/login', data).catch(err => err);
+    
     if(res.data.message === "Email not registered.") {
       setEmailError(true);
       setEmailHelper("Email inválido");
@@ -78,6 +80,7 @@ const Logon = () => {
       setPasswordError(true);
     }
     else {
+      handleLogin(true);
       // User authenticated successfully...
       // redirecting
       history.push('/disciplines');
