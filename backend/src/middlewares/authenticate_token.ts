@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { JsonWebTokenError } from 'jsonwebtoken';
 import { User } from 'src/@types/custom';
 import jwt from 'jsonwebtoken';
-import Auth from '../controllers/auth/Auth';
 
 require('dotenv').config();
 
@@ -16,11 +15,7 @@ const authenticate_token = (req: Request, res: Response, next: NextFunction) => 
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err: JsonWebTokenError, user: User) => {
     if (err) {
-      const auth = new Auth();
-      const accessToken = await auth.refresh_token(req, res);
-      if (accessToken.message){
-        return res.sendStatus(403);
-      }
+      return res.json({ message: 'Invalid token' });
     }
     req.user = user;
     next();
