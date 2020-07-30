@@ -1,5 +1,5 @@
 import React, { FormEvent, useState, ChangeEvent, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import './styles.css';
 
 import Card from '@material-ui/core/Card';
@@ -39,51 +39,73 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+interface DataLoginResponse {
+  message?: string,
+  accessToken: string
+}
+
 const Logon = () => {
-  const history = useHistory();
 
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
 
-  const { handleLogin } = useContext(Context);
-  
+
+  const { isAuthenticated, handleLogin } = useContext(Context);
+
+  // const [loading, setLoading] = useState(true);
   const [emailError, setEmailError] = useState(false);
   const [emailHelper, setEmailHelper] = useState("");
   const [passwordError, setPasswordError] = useState(false);
 
+  // useEffect(() => {
+  //   setLoading(true);
+  //   api.post('/refresh_token').then(async response => {
+  //     const data = await response.data.accessToken;
+  //     console.log(data);
+  //     api.defaults.headers.Authorization = `Bearer ${data}`;
+  //     if (data) {
+  //       handleLogin(true);
+  //     }
+  //     setLoading(false);
+  //   });
+  // }, [handleLogin]);
+
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
-    setFormData({...formData, [name]: value })
+    setFormData({ ...formData, [name]: value })
   }
 
   async function handleLoginSubmit(event: FormEvent) {
     event.preventDefault();
     setEmailError(false);
     setEmailHelper("");
-    
+
     const { email, password } = formData;
 
     const data = {
-      email, 
+      email,
       password,
     };
 
     const res = await api.post('/login', data).catch(err => err);
-    
-    if(res.data.message === "Email not registered.") {
+
+    const res_data: DataLoginResponse = res.data;
+
+    if (res_data.message === "Email not registered.") {
       setEmailError(true);
       setEmailHelper("Email inválido");
     }
-    else if(res.data.message === "Password incorrect.") {
+    else if (res_data.message === "Password incorrect.") {
       setPasswordError(true);
     }
     else {
-      handleLogin(true);
       // User authenticated successfully...
+      const token = res_data.accessToken;
+      handleLogin(true);
+      api.defaults.headers.Authorization = `Bearer ${token}`;
       // redirecting
-      history.push('/disciplines');
     }
   }
 
@@ -94,64 +116,72 @@ const Logon = () => {
   });
 
   const classes = useStyles();
-  return (
-    <ThemeProvider theme={darkTheme}>
-      <div className="container_logon">
-        <aside className="aside_logon">
-          <img src={Svg} alt="Login" />
-        </aside>
-        <Container component="main" maxWidth="xs" style={{
-          alignSelf: "center",
-          marginTop: "min(300px, 6rem)"
-        }}>
-          <Card className={classes.MuiCard}>
-            <CardHeader title="Login" className="align-center" />
-            <CardContent>
-              <form onSubmit={handleLoginSubmit} className={classes.form}>
-                <TextField
-                  error={emailError}
-                  className={classes.input}
-                  variant="filled"
-                  margin="normal"
-                  required
-                  helperText={emailHelper}
-                  id="email"
-                  label="Email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  autoFocus
-                  onChange={handleInputChange}
-                />
-                <TextField
-                  error={passwordError}
-                  className={classes.input}
-                  variant="filled"
-                  margin="normal"
-                  required
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  onChange={handleInputChange}
-                />
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="default"
-                  className={classes.button}
-                  startIcon={<ExitToAppIcon />}
-                >
-                  Entrar
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </Container>
-      </div>
-    </ThemeProvider>
-  );
+  // if(loading && isAuthenticated) {
+  //   return <div>Loading...</div>
+  // }
+  if (isAuthenticated) {
+    return <Redirect to="/disciplines" />
+  }
+  else {
+    return (
+      <ThemeProvider theme={darkTheme}>
+        <div className="container_logon">
+          <aside className="aside_logon">
+            <img src={Svg} alt="Login" />
+          </aside>
+          <Container component="main" maxWidth="xs" style={{
+            alignSelf: "center",
+            marginTop: "min(300px, 6rem)"
+          }}>
+            <Card className={classes.MuiCard}>
+              <CardHeader title="Login" className="align-center" />
+              <CardContent>
+                <form onSubmit={handleLoginSubmit} className={classes.form}>
+                  <TextField
+                    error={emailError}
+                    className={classes.input}
+                    variant="filled"
+                    margin="normal"
+                    required
+                    helperText={emailHelper}
+                    id="email"
+                    label="Email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    autoFocus
+                    onChange={handleInputChange}
+                  />
+                  <TextField
+                    error={passwordError}
+                    className={classes.input}
+                    variant="filled"
+                    margin="normal"
+                    required
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                    onChange={handleInputChange}
+                  />
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="default"
+                    className={classes.button}
+                    startIcon={<ExitToAppIcon />}
+                  >
+                    Entrar
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </Container>
+        </div>
+      </ThemeProvider>
+    );
+  }
 }
 
 export default Logon;

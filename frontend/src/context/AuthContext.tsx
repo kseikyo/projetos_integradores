@@ -8,9 +8,11 @@ const Context = createContext({
 const AuthProvider: React.FC = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  async function handleLogin(didAuthenticate: boolean) {
+  function handleLogin(didAuthenticate: boolean) {
     setIsAuthenticated(didAuthenticate);
   }
+  
+
 
   return (
     <Context.Provider value={{ isAuthenticated, handleLogin }}>

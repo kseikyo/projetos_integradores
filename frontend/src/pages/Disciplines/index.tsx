@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './styles.css';
-import MaterialTable, { Column } from 'material-table'
+import MaterialTable, { Column } from 'material-table';
 
 import Content from '../../components/Content';
 

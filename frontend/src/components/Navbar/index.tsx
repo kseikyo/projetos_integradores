@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
+import { Context } from '../../context/AuthContext';
+
 import './styles.css';
+import api from '../../api/api';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,6 +20,13 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Navbar: React.FC = () => {
+  const { handleLogin } = useContext(Context);
+
+  async function logout() {
+    await api.post('/logout');
+    handleLogin(false);
+  }
+
   const classes = useStyles();
   return (
     <header>
@@ -35,6 +45,7 @@ const Navbar: React.FC = () => {
           color="default"
           className={classes.button}
           startIcon={<ExitToAppIcon />}
+          onClick={logout}
         >
           Logout
         </Button>

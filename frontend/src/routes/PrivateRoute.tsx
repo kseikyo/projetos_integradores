@@ -3,9 +3,9 @@ import {
   Redirect,
   RouteProps
 } from 'react-router-dom';
-import React from 'react';
+import React, { useContext } from 'react';
 
-import { isAuthenticated } from '../utils/auth';
+import { Context } from '../context/AuthContext';
 
 interface PrivateRouteProps extends RouteProps {
   // tslint:disable-next-line:no-any
@@ -15,11 +15,15 @@ interface PrivateRouteProps extends RouteProps {
 const PrivateRoute = (props: PrivateRouteProps) => {
   const { component: Component, ...rest } = props;
 
+  const { isAuthenticated } = useContext(Context);
+
+
+
   return (
     <Route
       {...rest}
       render={(routeProps) =>
-        isAuthenticated() ? (
+        isAuthenticated ? (
           <Component {...routeProps} />
         ) : (
             <Redirect
