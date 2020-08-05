@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles.css';
 import MaterialTable, { Column } from 'material-table';
 
 import Content from '../../components/Content';
+import api from '../../api';
 
 interface Row {
   student_name: string;
@@ -18,6 +19,36 @@ interface TableState {
   columns: Array<Column<Row>>;
   data: Row[];
 }
+
+interface Disciplines {
+  carga_horaria?: number,
+  contem_modulo_id?: number
+  id: number,
+  nome?: string,
+  peso?: number,
+  ministra?: []
+};
+
+interface Aluno {
+  pessoa_aluno_id?: number
+}
+
+interface Pessoa {
+  nome?: string,
+  id?: number,
+  email?: string,
+  aluno?: [Aluno]
+}
+
+interface Avalia {
+  avalia_disciplina_id?: number,
+  avalia_pessoa_id?: number,
+  avalia_projeto_integrador_id?: number,
+  comentario?: string,
+  nota_parcial?: string,
+  pessoa?: [Pessoa]
+}
+
 
 const Disciplines = () => {
   const styles = {
@@ -119,6 +150,23 @@ const Disciplines = () => {
     ],
   });
 
+  const [professorDisciplines, setProfessorDisciplines] = useState<Disciplines[]>([]);
+  const [tutorsciplines, setTutorDisciplines] = useState<Disciplines[]>([]);
+  const [students, setStudents] = useState<Aluno[]>([]);
+
+
+  useEffect(() => {
+    api.get('/disciplines/professor/').then(async res => {
+      const professorDisciplines = await res.data;
+      setProfessorDisciplines(professorDisciplines);
+      console.log(professorDisciplines);
+      
+      const tutorDisciplines = await (await api.get('/disciplines/tutor')).data;
+      setTutorDisciplines(tutorDisciplines);
+      console.log(tutorDisciplines);
+    });
+
+  }, []);
 
   return (
     <Content>
@@ -129,7 +177,7 @@ const Disciplines = () => {
         columns={state.columns}
         data={state.data}
         style={styles}
-        onChangeRowsPerPage={() => {}}
+        onChangeRowsPerPage={() => { }}
         editable={{
           onRowUpdate: (newData, oldData) =>
             new Promise((resolve) => {
