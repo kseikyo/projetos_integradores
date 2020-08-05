@@ -12,7 +12,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Svg from '../../assets/undraw_Login_v483.svg'
 import { CardHeader, TextField, createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import api from '../../api/api';
+import api from '../../api';
 import { Context } from '../../context/AuthContext';
 
 

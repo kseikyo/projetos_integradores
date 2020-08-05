@@ -8,7 +8,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Context } from '../../context/AuthContext';
 
 import './styles.css';
-import api from '../../api/api';
+import api from '../../api';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
