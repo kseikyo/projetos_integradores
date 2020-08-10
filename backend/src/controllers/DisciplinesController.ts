@@ -109,7 +109,7 @@ class DisciplinesController {
         },
         include: {
           ministra: {
-            include: {
+            select: {
               disciplina: {
                 select: {
                   id: true,
@@ -196,14 +196,23 @@ class DisciplinesController {
       where: {
         id: Number(id)
       },
-      include: {
+      select: {
+        nome: true,
         avalia: {
-          include: {
+          select: {
+            nota_parcial: true,
             pessoa: {
-              include: {
+              select: {
+                id: true,
+                nome: true,
+                email: true,
                 aluno: {
                   select: {
-                    pessoa_aluno_id: true
+                    entrega: {
+                      select: {
+                        grupos: true,
+                      } 
+                    }
                   }
                 }
               }

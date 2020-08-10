@@ -37,7 +37,7 @@ routes.get('/professor/:id', professorController.show);
 routes.get('/disciplines', authenticate_token, disciplineController.index);
 routes.get('/disciplines/professor/', authenticate_token, disciplineController.show_by_professor_id);
 routes.get('/disciplines/tutor/', authenticate_token, disciplineController.show_by_tutor_id);
-routes.get('/disciplines/:id', disciplineController.students_from_discipline);
+routes.get('/disciplines/:id/students', disciplineController.students_from_discipline);
 
 // Evaluations routes
 routes.post('/evaluations/', authenticate_token, evaluationsController.update);

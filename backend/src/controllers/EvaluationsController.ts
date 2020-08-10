@@ -73,8 +73,6 @@ export default class EvaluationsController {
       // Get data uses Promise.all which only resolves when all promisses resolve
       // aluno.disciplinas.map also returns a list of promisses
 
-      // ERROR: duplicate key value violates unique constraint "avalia_pkey"
-      // DETAIL: Key(avalia_pessoa_id, avalia_projeto_integrador_id) = (7, 1) already exists.
       const evaluate = async () => {
         return await Promise.all(
           alunosProjetos.map(async (aluno: Aluno_projetos) => {
