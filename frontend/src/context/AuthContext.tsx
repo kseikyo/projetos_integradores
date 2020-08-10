@@ -1,34 +1,21 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext } from 'react';
 
-import api from '../api';
+import useAuth from './hooks/useAuth';
 
 const Context = createContext({
+  loading: false,
   isAuthenticated: false,
-  handleLogin: (didAuthenticate: boolean) => {},
+  handleLogin: (didAuthenticate: boolean) => { },
+  handleLogout: () => { },
 })
 
 const AuthProvider: React.FC = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { loading, handleLogin, isAuthenticated, handleLogout } = useAuth();
 
-  useEffect(() => {
-    api.post('/refresh_token').then(async req => {
-      const accessToken = await req.data.accessToken;
-      api.defaults.headers.Authorization = `Bearer ${accessToken}`;
-      console.log(`setting is auth to TRUE`);
-      setIsAuthenticated(true); 
-    })
-  }, []);
-
-  function handleLogin(didAuthenticate: boolean) {
-    console.log(`Setting isAuth from ${isAuthenticated} to`);
-    setIsAuthenticated(didAuthenticate);
-    console.log(`${didAuthenticate}`);
-  }
-  
   return (
-    <Context.Provider value={{ isAuthenticated, handleLogin }}>
-      { children }
-    </Context.Provider>  
+    <Context.Provider value={{ loading, isAuthenticated, handleLogin, handleLogout }}>
+      {children}
+    </Context.Provider>
   );
 }
 

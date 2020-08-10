@@ -15,9 +15,11 @@ interface PrivateRouteProps extends RouteProps {
 const PrivateRoute = (props: PrivateRouteProps) => {
   const { component: Component, ...rest } = props;
 
-  const { isAuthenticated } = useContext(Context);
+  const { isAuthenticated, loading } = useContext(Context);
 
-
+  if(loading) {
+    return <div>loading...</div>
+  }
 
   return (
     <Route

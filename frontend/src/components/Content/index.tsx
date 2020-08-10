@@ -16,15 +16,15 @@ const Content: React.FC = ({ children }) => {
       <div className="container">
         <Navbar />
         <Box
-          marginTop="56px"
-          height="70vh"
+          marginTop="3.125rem"
+          height="78vh"
           width="85vw"
           justifySelf="center"
           boxShadow={18}
-          justifyContent="center" 
+          justifyContent="center"
           alignItems="center" 
           display="flex"
-          borderRadius="8px"
+          borderRadius="1.125rem"
         >
             {children}
         </Box>

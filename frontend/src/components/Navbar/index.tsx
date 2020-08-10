@@ -8,7 +8,6 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Context } from '../../context/AuthContext';
 
 import './styles.css';
-import api from '../../api';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,12 +19,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Navbar: React.FC = () => {
-  const { handleLogin } = useContext(Context);
+  const { handleLogout } = useContext(Context);
 
-  async function logout() {
-    await api.post('/logout');
-    handleLogin(false);
-  }
 
   const classes = useStyles();
   return (
@@ -45,7 +40,7 @@ const Navbar: React.FC = () => {
           color="default"
           className={classes.button}
           startIcon={<ExitToAppIcon />}
-          onClick={logout}
+          onClick={handleLogout}
         >
           Logout
         </Button>
